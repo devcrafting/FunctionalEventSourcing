@@ -1,5 +1,17 @@
 module CrazyEights
 
+type Rank =
+    | Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten
+    | Jack | Queen | King
+type Suit = Club | Spade | Diamond | Heart
+
+type Card = {
+    Rank: Rank
+    Suit: Suit
+}
+
+let (^) rank suit = { Rank = rank; Suit = suit }
+
 [<Struct>]
 type Players = private Players of int
 
