@@ -35,23 +35,23 @@ and GameStarted = {
 }
 
 type State =
-    | InitialState
+    | NotStarted
     | Started
 
-let initialState = InitialState
+let initialState = NotStarted
 
 let decide (command: Command) (state:State) : Event list =
     match command with
     | StartGame c ->
         match state with
-        | InitialState ->
+        | NotStarted ->
             [ GameStarted { Players = c.Players } ]
         | Started ->
             []
 
 let evolve (state: State) (event:Event) : State =
     match state, event with
-    | InitialState, GameStarted _ -> Started
+    | NotStarted, GameStarted _ -> Started
     | _ -> state
 
 [<EntryPoint>]
