@@ -32,24 +32,30 @@ let ``Game should do nothing when start a started game`` () =
 [<Fact>]
 let ``Game should allow playing card with same suit`` () =
     [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
-    => Play { Card = Four ^ Spade }
-    =! [ CardPlayed { Card = Four ^ Spade }]
+    => Play { Card = Four ^ Spade; Player = Player 1 }
+    =! [ CardPlayed { Card = Four ^ Spade; Player = Player 1 }]
 
 [<Fact>]
 let ``Game should allow playing card with same rank`` () =
     [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
-    => Play { Card = Three ^ Heart }
-    =! [ CardPlayed { Card = Three ^ Heart }]
+    => Play { Card = Three ^ Heart; Player = Player 1 }
+    =! [ CardPlayed { Card = Three ^ Heart; Player = Player 1 }]
 
 [<Fact>]
 let ``Game should NOT allow playing card with different suit and rank`` () =
     [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
-    => Play { Card = Four ^ Heart }
-    =! [ WrongCardPlayed { Card = Four ^ Heart }]
+    => Play { Card = Four ^ Heart; Player = Player 1 }
+    =! [ WrongCardPlayed { Card = Four ^ Heart; Player = Player 1 }]
 
 [<Fact>]
 let ``Game should take in account last card played`` () =
     [ GameStarted { Players = players 4; FirstCard = Three ^ Spade }
-      CardPlayed { Card = Four ^ Spade } ]
-    => Play { Card = Four ^ Diamond }
-    =! [ CardPlayed { Card = Four ^ Diamond }]
+      CardPlayed { Card = Four ^ Spade; Player = Player 1 } ]
+    => Play { Card = Four ^ Diamond; Player = Player 2 }
+    =! [ CardPlayed { Card = Four ^ Diamond; Player = Player 2 }]
+
+[<Fact>]
+let ``Game should NOT allow a player to play not when not their turn`` () =
+    [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
+    => Play { Card = Three ^ Diamond; Player = Player 2 }
+    =! [ WrongPlayerPlayed { Card = Three ^ Diamond; Player = Player 2 }]
