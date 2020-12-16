@@ -28,3 +28,9 @@ let ``Game should do nothing when start a started game`` () =
     [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
     => StartGame { Players = players 4; FirstCard = Three ^ Spade }
     =! []
+
+[<Fact>]
+let ``Game should allow playing card with same suit`` () =
+    [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
+    => Play { Card = Four ^ Spade }
+    =! [ CardPlayed { Card = Four ^ Spade }]

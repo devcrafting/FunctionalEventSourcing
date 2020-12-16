@@ -35,9 +35,13 @@ and Play = {
 
 type Event =
     | GameStarted of GameStarted
+    | CardPlayed of CardPlayed
 and GameStarted = {
     Players: Players
     FirstCard: Card
+}
+and CardPlayed = {
+    Card: Card
 }
 
 type State =
@@ -50,6 +54,8 @@ let decide (command: Command) (state:State) : Event list =
     match state, command with
     | NotStarted, StartGame c ->
         [ GameStarted { Players = c.Players; FirstCard = c.FirstCard } ]
+    | Started, Play c ->
+        [ CardPlayed { Card = c.Card }]
     | _ ->
         []
 
