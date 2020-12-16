@@ -36,6 +36,7 @@ and Play = {
 type Event =
     | GameStarted of GameStarted
     | CardPlayed of CardPlayed
+    | WrongCardPlayed of CardPlayed
 and GameStarted = {
     Players: Players
     FirstCard: Card
@@ -46,7 +47,10 @@ and CardPlayed = {
 
 type State =
     | NotStarted
-    | Started
+    | Started of Started
+and Started = {
+    TopCard: Card
+}
 
 let initialState = NotStarted
 
@@ -54,14 +58,16 @@ let decide (command: Command) (state:State) : Event list =
     match state, command with
     | NotStarted, StartGame c ->
         [ GameStarted { Players = c.Players; FirstCard = c.FirstCard } ]
-    | Started, Play c ->
+    | Started s, Play c when c.Card.Suit <> s.TopCard.Suit ->
+        [ WrongCardPlayed { Card = c.Card } ]
+    | Started _, Play c ->
         [ CardPlayed { Card = c.Card }]
     | _ ->
         []
 
 let evolve (state: State) (event:Event) : State =
     match state, event with
-    | NotStarted, GameStarted _ -> Started
+    | NotStarted, GameStarted e -> Started { TopCard = e.FirstCard }
     | _ -> state
 
 [<EntryPoint>]
