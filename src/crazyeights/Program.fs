@@ -58,7 +58,7 @@ let decide (command: Command) (state:State) : Event list =
     match state, command with
     | NotStarted, StartGame c ->
         [ GameStarted { Players = c.Players; FirstCard = c.FirstCard } ]
-    | Started s, Play c when c.Card.Suit <> s.TopCard.Suit ->
+    | Started s, Play c when c.Card.Suit <> s.TopCard.Suit && c.Card.Rank <> s.TopCard.Rank ->
         [ WrongCardPlayed { Card = c.Card } ]
     | Started _, Play c ->
         [ CardPlayed { Card = c.Card }]

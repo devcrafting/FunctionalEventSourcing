@@ -36,6 +36,12 @@ let ``Game should allow playing card with same suit`` () =
     =! [ CardPlayed { Card = Four ^ Spade }]
 
 [<Fact>]
+let ``Game should allow playing card with same rank`` () =
+    [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
+    => Play { Card = Three ^ Heart }
+    =! [ CardPlayed { Card = Three ^ Heart }]
+
+[<Fact>]
 let ``Game should NOT allow playing card with different suit and rank`` () =
     [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
     => Play { Card = Four ^ Heart }
