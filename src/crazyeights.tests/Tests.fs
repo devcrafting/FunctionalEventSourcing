@@ -59,3 +59,12 @@ let ``Game should NOT allow a player to play not when not their turn`` () =
     [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
     => Play { Card = Three ^ Diamond; Player = Player 2 }
     =! [ WrongPlayerPlayed { Card = Three ^ Diamond; Player = Player 2 }]
+
+[<Fact>]
+let ``Game should cycle players' turn`` () =
+    [ GameStarted { Players = players 4; FirstCard = Three ^ Spade }
+      CardPlayed { Card = Three ^ Diamond; Player = Player 1 }
+      CardPlayed { Card = Four ^ Diamond; Player = Player 2 }
+      CardPlayed { Card = Five ^ Diamond; Player = Player 3 } ]
+    => Play { Card = Six ^ Diamond; Player = Player 0 }
+    =! [ CardPlayed { Card = Six ^ Diamond; Player = Player 0 }]

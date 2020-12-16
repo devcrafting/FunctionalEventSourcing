@@ -21,6 +21,7 @@ module Players =
             Error "Too few players"
         else
             Ok (Players n)
+    let value (Players p) = p
 
 type Player = Player of int
 
@@ -55,6 +56,7 @@ type State =
     | Started of Started
 and Started = {
     TopCard: Card
+    Players: Players
     NextPlayer: Player
 }
 
@@ -76,9 +78,9 @@ let decide (command: Command) (state:State) : Event list =
 let evolve (state: State) (event:Event) : State =
     match state, event with
     | NotStarted, GameStarted e ->
-        Started { TopCard = e.FirstCard; NextPlayer = Player 1 }
+        Started { TopCard = e.FirstCard; NextPlayer = Player 1; Players = e.Players }
     | Started s, CardPlayed { Card = c; Player = Player p } ->
-        Started { s with TopCard = c; NextPlayer = Player (p+1) }
+        Started { s with TopCard = c; NextPlayer = Player ((p+1) % (s.Players |> Players.value)) }
     | _ -> state
 
 [<EntryPoint>]
