@@ -24,14 +24,20 @@ module Players =
 
 type Command =
     | StartGame of StartGame
+    | Play of Play
 and StartGame = {
     Players: Players
+    FirstCard: Card
+}
+and Play = {
+    Card: Card
 }
 
 type Event =
     | GameStarted of GameStarted
 and GameStarted = {
     Players: Players
+    FirstCard: Card
 }
 
 type State =
@@ -41,13 +47,11 @@ type State =
 let initialState = NotStarted
 
 let decide (command: Command) (state:State) : Event list =
-    match command with
-    | StartGame c ->
-        match state with
-        | NotStarted ->
-            [ GameStarted { Players = c.Players } ]
-        | Started ->
-            []
+    match state, command with
+    | NotStarted, StartGame c ->
+        [ GameStarted { Players = c.Players; FirstCard = c.FirstCard } ]
+    | _ ->
+        []
 
 let evolve (state: State) (event:Event) : State =
     match state, event with

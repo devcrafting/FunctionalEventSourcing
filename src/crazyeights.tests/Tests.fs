@@ -16,8 +16,8 @@ let players n =
 [<Fact>]
 let ``Game should start`` () =
     []
-    => StartGame { Players = players 4 }
-    =! [ GameStarted { Players = players 4 }]
+    => StartGame { Players = players 4; FirstCard = Three ^ Spade }
+    =! [ GameStarted { Players = players 4; FirstCard = Three ^ Spade }]
 
 [<Fact>]
 let ``It's not fun to play alone`` () =
@@ -25,6 +25,6 @@ let ``It's not fun to play alone`` () =
 
 [<Fact>]
 let ``Game should do nothing when start a started game`` () =
-    [ GameStarted { Players = players 4 } ]
-    => StartGame { Players = players 4 }
+    [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
+    => StartGame { Players = players 4; FirstCard = Three ^ Spade }
     =! []
