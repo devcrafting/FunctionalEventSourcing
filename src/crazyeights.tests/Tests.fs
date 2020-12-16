@@ -46,3 +46,10 @@ let ``Game should NOT allow playing card with different suit and rank`` () =
     [ GameStarted { Players = players 4; FirstCard = Three ^ Spade } ]
     => Play { Card = Four ^ Heart }
     =! [ WrongCardPlayed { Card = Four ^ Heart }]
+
+[<Fact>]
+let ``Game should take in account last card played`` () =
+    [ GameStarted { Players = players 4; FirstCard = Three ^ Spade }
+      CardPlayed { Card = Four ^ Spade } ]
+    => Play { Card = Four ^ Diamond }
+    =! [ CardPlayed { Card = Four ^ Diamond }]

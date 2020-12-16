@@ -68,6 +68,7 @@ let decide (command: Command) (state:State) : Event list =
 let evolve (state: State) (event:Event) : State =
     match state, event with
     | NotStarted, GameStarted e -> Started { TopCard = e.FirstCard }
+    | Started s, CardPlayed e -> Started { s with TopCard = e.Card }
     | _ -> state
 
 [<EntryPoint>]
