@@ -25,6 +25,24 @@ module Players =
 
 type Player = Player of int
 
+type Table = {
+    Players: Players
+    NextPlayer: Player
+}
+
+module Table =
+    let start players = {
+        Players = players
+        NextPlayer = Player 1
+    }
+
+    let nextPlayer table =
+        let (Players n) = table.Players
+        let (Player p) = table.NextPlayer
+        {
+            table with NextPlayer = Player ((p+1) % n)
+        }
+
 type Command =
     | StartGame of StartGame
     | Play of Play
@@ -56,8 +74,7 @@ type State =
     | Started of Started
 and Started = {
     TopCard: Card
-    Players: Players
-    NextPlayer: Player
+    Table: Table
 }
 
 let initialState = NotStarted
@@ -66,7 +83,7 @@ let decide (command: Command) (state:State) : Event list =
     match state, command with
     | NotStarted, StartGame c ->
         [ GameStarted { Players = c.Players; FirstCard = c.FirstCard } ]
-    | Started s, Play c when c.Player <> s.NextPlayer ->
+    | Started s, Play c when c.Player <> s.Table.NextPlayer ->
         [ WrongPlayerPlayed { Card = c.Card; Player = c.Player } ]
     | Started s, Play c when c.Card.Suit <> s.TopCard.Suit && c.Card.Rank <> s.TopCard.Rank ->
         [ WrongCardPlayed { Card = c.Card; Player = c.Player } ]
@@ -78,9 +95,9 @@ let decide (command: Command) (state:State) : Event list =
 let evolve (state: State) (event:Event) : State =
     match state, event with
     | NotStarted, GameStarted e ->
-        Started { TopCard = e.FirstCard; NextPlayer = Player 1; Players = e.Players }
+        Started { TopCard = e.FirstCard; Table = Table.start e.Players }
     | Started s, CardPlayed { Card = c; Player = Player p } ->
-        Started { s with TopCard = c; NextPlayer = Player ((p+1) % (s.Players |> Players.value)) }
+        Started { s with TopCard = c; Table = Table.nextPlayer s.Table }
     | _ -> state
 
 [<EntryPoint>]
