@@ -43,6 +43,8 @@ module Table =
             table with NextPlayer = Player ((p+1) % n)
         }
 
+    let skip = nextPlayer >> nextPlayer
+
 type Command =
     | StartGame of StartGame
     | Play of Play
@@ -97,7 +99,10 @@ let evolve (state: State) (event:Event) : State =
     | NotStarted, GameStarted e ->
         Started { TopCard = e.FirstCard; Table = Table.start e.Players }
     | Started s, CardPlayed { Card = c; Player = Player p } ->
-        Started { s with TopCard = c; Table = Table.nextPlayer s.Table }
+        let nextTable =
+            if c.Rank = Seven then Table.skip s.Table
+            else Table.nextPlayer s.Table
+        Started { s with TopCard = c; Table = nextTable }
     | _ -> state
 
 [<EntryPoint>]

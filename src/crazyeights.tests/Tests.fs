@@ -68,3 +68,10 @@ let ``Game should cycle players' turn`` () =
       CardPlayed { Card = Five ^ Diamond; Player = Player 3 } ]
     => Play { Card = Six ^ Diamond; Player = Player 0 }
     =! [ CardPlayed { Card = Six ^ Diamond; Player = Player 0 }]
+
+[<Fact>]
+let ``Game should skip next player when current player plays a 7`` () =
+    [ GameStarted { Players = players 4; FirstCard = Three ^ Spade }
+      CardPlayed { Card = Seven ^ Heart; Player = Player 1 } ]
+    => Play { Card = Three ^ Heart; Player = Player 3 }
+    =! [ CardPlayed { Card = Three ^ Heart; Player = Player 3 }]
